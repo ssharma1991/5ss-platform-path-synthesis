@@ -1,4 +1,4 @@
-$ C:/Users/sshel/Downloads/Compressed/BertiniWindows64_v1.6/bertini.exe
+$ C:/BertiniWindows64_v1.6/bertini.exe
 
    Bertini(TM) v1.6
     (May 22, 2018)
