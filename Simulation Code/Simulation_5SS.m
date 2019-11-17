@@ -10,24 +10,36 @@ Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
 simulate5SS(Pts)
 
 function [] = simulate5SS(Pts)
-drawMech(Pts);
 DistConsts=[1,6; 2,7; 3,8; 4,9; 5,10; 
     11,6; 11,7; 11,8; 11,9; 11,10; 
     6,7; 6,8; 6,9; 6,10; 
     7,8; 7,9; 7,10; 
     1,7];
-L=LenConst(Pts,DistConsts);
-F=Cost(L,L)
-F_dash=CostGradient(Pts,DistConsts,L);
-inv(F_dash)
+L_init=LenConst(Pts,DistConsts);
+L_target=L_init;
+for disp=0:-.01:-1
+    L_target(end)=L_init(end)+disp;
+    F=Cost(LenConst(Pts,DistConsts),L_target);
+    while (norm(F)>10^-8)
+        F_dash=CostGradient(Pts,DistConsts);
+        dX=-F_dash\F;
+        dX=reshape(dX,[3,6])';
+        Pts(6:11,:)=Pts(6:11,:)+dX;
+        F=Cost(LenConst(Pts,DistConsts),L_target);
+    end
+    
+    cla
+    drawMech(Pts);
+    drawnow
+end
 end
 
 
 % SIMULATION Functions
-function [Cst]= Cost(initLen,newLen)
-Cst=(newLen-initLen);
+function [Cst]= Cost(CurrentL,TargetL)
+Cst=(CurrentL-TargetL);
 end
-function [grad]= CostGradient(Pts,DistConsts,initLen)
+function [grad]= CostGradient(Pts,DistConsts)
 grad=zeros(18,18);
 for i=1:18
     % Permute over each constraint
@@ -38,9 +50,9 @@ for i=1:18
     
     %Partial derivative wrt x,y,z of first coordinate
     if Pt1_index>5
-        dx=(Pt1(1)-Pt2(1))/initLen(i);
-        dy=(Pt1(2)-Pt2(2))/initLen(i);
-        dz=(Pt1(3)-Pt2(3))/initLen(i);
+        dx=(Pt1(1)-Pt2(1))/norm(Pt1-Pt2);
+        dy=(Pt1(2)-Pt2(2))/norm(Pt1-Pt2);
+        dz=(Pt1(3)-Pt2(3))/norm(Pt1-Pt2);
         
         grad(i,3*(Pt1_index-5)-2)=dx;
         grad(i,3*(Pt1_index-5)-1)=dy;
@@ -48,9 +60,9 @@ for i=1:18
     end
     
     %Partial derivative wrt x,y,z of second coordinate
-    dx=-(Pt1(1)-Pt2(1))/initLen(i);
-    dy=-(Pt1(2)-Pt2(2))/initLen(i);
-    dz=-(Pt1(3)-Pt2(3))/initLen(i);
+    dx=-(Pt1(1)-Pt2(1))/norm(Pt1-Pt2);
+    dy=-(Pt1(2)-Pt2(2))/norm(Pt1-Pt2);
+    dz=-(Pt1(3)-Pt2(3))/norm(Pt1-Pt2);
         
     grad(i,3*(Pt2_index-5)-2)=dx;
     grad(i,3*(Pt2_index-5)-1)=dy;
@@ -66,6 +78,7 @@ for i=1:n_const
     Pt2=Pts(Pt2_index,:);
     Lengths(i)=norm(Pt1-Pt2);
 end
+Lengths=Lengths';
 end
 
 % DRAWING function
@@ -110,6 +123,6 @@ end
 
 %Print Coupler point
 scatter3(cplr(1),cplr(2),cplr(3),20,'ko','LineWidth',1)
-axis ([-10 10 -10 10 -10 10])
+axis ([-15 15 -15 15 -15 15])
 pbaspect([1 1 1])
 end
