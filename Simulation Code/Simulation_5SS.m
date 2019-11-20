@@ -3,7 +3,7 @@ clear all
 close all
 
 %Dyads matrix [Fx,Fy,Fz,Mx,My,Mz]
-rng(1);
+rng(2);
 dyads=random('Uniform',-10,10,[5,6]);
 cplr=random('Uniform',-10,10,[1,3]);
 Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
@@ -17,25 +17,41 @@ DistConsts=[1,6; 2,7; 3,8; 4,9; 5,10;
     1,7];
 L_init=LenConst(Pts,DistConsts);
 L_target=L_init;
-for disp=0:-.01:-1
+disp=0;
+cplr_Path=[];
+while(true)
     L_target(end)=L_init(end)+disp;
+    Pts=NewtonRhapson(L_target,Pts,DistConsts);
+    
     F=Cost(LenConst(Pts,DistConsts),L_target);
-    while (norm(F)>10^-8)
-        F_dash=CostGradient(Pts,DistConsts);
-        dX=-F_dash\F;
-        dX=reshape(dX,[3,6])';
-        Pts(6:11,:)=Pts(6:11,:)+dX;
-        F=Cost(LenConst(Pts,DistConsts),L_target);
+    if norm(F)>10^-8
+        break
     end
+    disp=disp+.01;
+    cplr_Path=[cplr_Path;Pts(11,:)];
     
     cla
     drawMech(Pts);
+    plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3));
     drawnow
 end
 end
 
 
 % SIMULATION Functions
+function [Pts]= NewtonRhapson(L_target,Pts,DistConsts)
+F=Cost(LenConst(Pts,DistConsts),L_target);
+for i=1:10
+    F_dash=CostGradient(Pts,DistConsts);
+    dX=-F_dash\F;
+    dX=reshape(dX,[3,6])';
+    Pts(6:11,:)=Pts(6:11,:)+dX;
+    F=Cost(LenConst(Pts,DistConsts),L_target);
+    if (norm(F)<10^-8)
+        break
+    end
+end
+end
 function [Cst]= Cost(CurrentL,TargetL)
 Cst=(CurrentL-TargetL);
 end
