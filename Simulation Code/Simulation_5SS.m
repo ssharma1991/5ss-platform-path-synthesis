@@ -2,19 +2,32 @@ clc
 clear all
 close all
 
+%rng(2);
+generate5SSData(10)
+
+function []= generate5SSData (n_data)
 %Dyads matrix [Fx,Fy,Fz,Mx,My,Mz]
-rng(2);
 dyads=random('Uniform',-10,10,[5,6]);
 cplr=random('Uniform',-10,10,[1,3]);
 Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
-simulate5SS(Pts)
 
-function [] = simulate5SS(Pts)
+for i=1:n_data
+    cplr=simulate5SS(Pts);
+    %drawMech(Pts,cplr)
+end
+end
+function [cplr] = simulate5SS(Pts)
+cplrP=simulate5SS_linearActuation(Pts, .01);
+cplrN=simulate5SS_linearActuation(Pts, -.01);
+cplr=cat(1,flip(cplrN),cplrP);
+end
+function [cplr_Path] = simulate5SS_linearActuation(Pts, iter)
 DistConsts=[1,6; 2,7; 3,8; 4,9; 5,10; 
     11,6; 11,7; 11,8; 11,9; 11,10; 
     6,7; 6,8; 6,9; 6,10; 
     7,8; 7,9; 7,10; 
     1,7];
+
 L_init=LenConst(Pts,DistConsts);
 L_target=L_init;
 disp=0;
@@ -27,13 +40,12 @@ while(true)
     if norm(F)>10^-8
         break
     end
-    disp=disp+.01;
+    disp=disp+iter;
     cplr_Path=[cplr_Path;Pts(11,:)];
     
-    cla
-    drawMech(Pts);
-    plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3));
-    drawnow
+%     cla
+%     drawMech(Pts,cplr_Path);
+%     drawnow
 end
 end
 
@@ -98,7 +110,7 @@ Lengths=Lengths';
 end
 
 % DRAWING function
-function []= drawMech(Pts)
+function []= drawMech(Pts,cplr_Path)
 dyads=[Pts(1:5,:),Pts(6:10,:)];
 cplr=Pts(11,:);
 
@@ -141,4 +153,7 @@ end
 scatter3(cplr(1),cplr(2),cplr(3),20,'ko','LineWidth',1)
 axis ([-15 15 -15 15 -15 15])
 pbaspect([1 1 1])
+
+%Print Coupler Path
+plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3),'r','LineWidth',2);
 end
