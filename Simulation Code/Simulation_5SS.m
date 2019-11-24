@@ -3,10 +3,11 @@ clear all
 close all
 
 %rng(2);
-generate5SSData(100)
+generate5SSData(1000)
 
 function []= generate5SSData (n_data)
 fid = fopen('database5SS.txt','w');
+txt={};
 for i=1:n_data
     if mod(i,10)==0
         i
@@ -16,12 +17,14 @@ for i=1:n_data
     dyads=random('Uniform',-10,10,[5,6]);
     cplr=random('Uniform',-10,10,[1,3]);
     Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
-    cplr=simulate5SS(Pts);
+    cplrpath=simulate5SS(Pts);
     %drawMech(Pts,cplr)
     
-    txt=jsonencode(struct('Mech',Pts,'CplrPath',cplr));
-    fprintf(fid,txt);
+    t=struct('Mech',Pts,'CplrPath',cplrpath);
+    txt{i}=t;
 end
+txt=jsonencode(txt);
+fprintf(fid,txt);
 fclose(fid);
 end
 function [cplr] = simulate5SS(Pts)
