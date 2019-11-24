@@ -3,18 +3,26 @@ clear all
 close all
 
 %rng(2);
-generate5SSData(10)
+generate5SSData(100)
 
 function []= generate5SSData (n_data)
-%Dyads matrix [Fx,Fy,Fz,Mx,My,Mz]
-dyads=random('Uniform',-10,10,[5,6]);
-cplr=random('Uniform',-10,10,[1,3]);
-Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
-
+fid = fopen('database5SS.txt','w');
 for i=1:n_data
+    if mod(i,10)==0
+        i
+    end
+    
+    %Dyads matrix [Fx,Fy,Fz,Mx,My,Mz]
+    dyads=random('Uniform',-10,10,[5,6]);
+    cplr=random('Uniform',-10,10,[1,3]);
+    Pts=[dyads(1:5,1:3);dyads(1:5,4:6);cplr];
     cplr=simulate5SS(Pts);
     %drawMech(Pts,cplr)
+    
+    txt=jsonencode(struct('Mech',Pts,'CplrPath',cplr));
+    fprintf(fid,txt);
 end
+fclose(fid);
 end
 function [cplr] = simulate5SS(Pts)
 cplrP=simulate5SS_linearActuation(Pts, .01);
