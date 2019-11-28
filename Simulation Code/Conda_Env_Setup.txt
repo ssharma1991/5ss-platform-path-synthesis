@@ -1,0 +1,7 @@
+conda create --name ml
+conda install -c anaconda keras
+conda install -c anaconda notebook
+conda install jupyter
+conda install -c anaconda matplotlib
+conda update -all
+conda clean -a
