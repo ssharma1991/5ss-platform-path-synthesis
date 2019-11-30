@@ -3,13 +3,14 @@ clear all
 close all
 
 %rng(2);
-generate5SSData(1000)
+%Time to generate 2500 samples is 3m30s
+generate5SSData(2500)
 
 function []= generate5SSData (n_data)
 fid = fopen('database5SS.txt','w');
 txt={};
 for i=1:n_data
-    if mod(i,10)==0
+    if mod(i,100)==0
         i
     end
     
