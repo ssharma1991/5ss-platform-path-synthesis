@@ -2,12 +2,13 @@ clc
 clear all
 close all
 
-%rng(2);
+rng(0);
 %Time to generate 2500 samples is 3m30s
 generate5SSData(2500)
 
 function []= generate5SSData (n_data)
-fid = fopen('database5SS.txt','w');
+filename = strcat('database5SS_n',num2str(n_data),'_json.txt');
+fid = fopen(filename,'w');
 txt={};
 for i=1:n_data
     if mod(i,100)==0
