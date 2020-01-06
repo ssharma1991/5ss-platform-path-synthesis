@@ -3,6 +3,8 @@ conda install -c anaconda keras
 conda install -c anaconda notebook
 conda install jupyter
 conda install -c conda-forge jupyter_contrib_nbextensions
+conda install -c conda-forge jupyterthemes
+jt -N -T -fs 95 -tfs 14 -nfs 115 -cellw 90% -t  onedork
 conda install -c anaconda matplotlib
 conda install -c anaconda scikit-learn
 conda install -c anaconda graphviz
