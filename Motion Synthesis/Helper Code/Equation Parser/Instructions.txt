@@ -1,9 +1,0 @@
-Copy ToMatlab.m package to Location outputted my Mathametica when you run the following:
-FileNameJoin[{$UserBaseDirectory, "Applications"}]
-
-Output shoud look something like:
-eg- C:\Users\sshel\AppData\Roaming\Mathematica\Applications
-
-ToMatlab Package has been edited. New version don't use .* and .^ which are used in MATLAB. Instead, it uses * and ^ which are used in Bertini
-
-Also, Precision of exported equations has been increased.
