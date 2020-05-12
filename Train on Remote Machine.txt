@@ -1,0 +1,33 @@
+1. SSH TUNNELING
+- use putty on windows to setup ssh tunneling
+- Server info (Hostname, Port, Username, Password) needed
+
+
+2. INSTALL CONDA
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+
+
+3. SETUP CONDA ENVIRONMENT
+conda create --name ml
+conda activate ml
+conda install -c anaconda keras
+conda install -c anaconda notebook
+conda install jupyter
+conda install -c conda-forge jupyter_contrib_nbextensions
+conda install -c conda-forge jupyterthemes
+jt -N -T -fs 95 -tfs 14 -nfs 115 -cellw 90% -t  onedork
+conda install -c anaconda matplotlib
+conda install -c anaconda scikit-learn
+conda install -c anaconda graphviz
+conda install -c anaconda pydot
+conda update --all
+conda clean -a
+
+
+4. REMOTE JUPYTER NOTEBOOKS
+jupyter notebook --no-browser --port 1234
+- copy link with token in browser
+
+
+4. GITHUB COMMIT
