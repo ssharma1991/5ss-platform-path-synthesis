@@ -38,4 +38,51 @@ Many different architectures are being tested to find the best for our use-case.
 [Tips to improve ML performance](https://machinelearningmastery.com/machine-learning-performance-improvement-cheat-sheet/)
 
 
+## Setup environment and train on a remote machine
+
+### SSH Tunneling
+- use putty on windows to setup ssh tunneling
+- Server info (Hostname, Port, Username, Password) needed
+
+### Install Conda
+- `wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh`
+- `bash Miniconda3-latest-Linux-x86_64.sh`
+
+### Setup Conda Environment
+- `conda create --name ml`
+- `conda activate ml`
+- `conda install -c anaconda keras-gpu [OR conda install -c anaconda keras]`
+- `conda install -c anaconda notebook`
+- `conda install jupyter`
+- `conda install -c anaconda matplotlib`
+- `conda install -c anaconda scikit-learn`
+- `conda install -c anaconda graphviz`
+- `conda install -c anaconda pydot`
+- `conda update --all`
+- `conda clean -a`
+
+### Jupyter Notebook Quality of Life improvements
+- `conda install -c conda-forge jupyter_contrib_nbextensions`
+- Enable extensions: Code prettify, Collapsible Headings, ExecuteTime, Notify, spellchecker
+- `conda install -c conda-forge jupyterthemes`
+- `jt -N -T -fs 95 -tfs 14 -nfs 115 -cellw 90% -t  onedork -altmd -altout`
+
+### Open remote Jupyter Notebook
+- `jupyter notebook --no-browser --port 1234`
+- copy link with token in browser
+
+### Setup Git
+- `git config user.name "Shashank"`
+- `git config user.email "shashank.sharma@stonybrook.edu"`
+
+### Push repo to Github
+- `git add .`
+- `git commit`
+- `git push`
+
+### Monitor GPU Usage
+- `watch nvidia-smi`
+
+
+
 
