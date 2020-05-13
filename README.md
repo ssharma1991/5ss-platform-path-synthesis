@@ -51,19 +51,14 @@ Many different architectures are being tested to find the best for our use-case.
 ### Setup Conda Environment
 - `conda create --name ml`
 - `conda activate ml`
-- `conda install -c anaconda keras-gpu [OR conda install -c anaconda keras]`
-- `conda install -c anaconda notebook`
-- `conda install jupyter`
-- `conda install -c anaconda matplotlib`
-- `conda install -c anaconda scikit-learn`
-- `conda install -c anaconda graphviz`
-- `conda install -c anaconda pydot`
+- `conda install keras-gpu` OR `conda install keras`
+- `conda install jupyter matplotlib scikit-learn graphviz pydot`
 - `conda update --all`
 - `conda clean -a`
 
 ### Jupyter Notebook Quality of Life improvements
 - `conda install -c conda-forge jupyter_contrib_nbextensions`
-- Enable extensions: Code prettify, Collapsible Headings, ExecuteTime, Notify, spellchecker
+- Enable extensions: Collapsible Headings, ExecuteTime, spellchecker, Code prettify, Notify
 - `conda install -c conda-forge jupyterthemes`
 - `jt -N -T -fs 95 -tfs 14 -nfs 115 -cellw 90% -t  onedork -altmd -altout`
 
@@ -74,6 +69,7 @@ Many different architectures are being tested to find the best for our use-case.
 ### Setup Git
 - `git config user.name "Shashank"`
 - `git config user.email "shashank.sharma@stonybrook.edu"`
+- `git clone https://github.com/ssharma1991/5ss-platform-path-synthesis.git`
 
 ### Push repo to Github
 - `git add .`
