@@ -17,27 +17,30 @@ Pts=[[-7.20078633 -5.2930031   7.87116744]
  [-0.97390133 -9.04023547  1.92449292]
  [ 2.19533097 -7.1743553   5.35866566]];
 
-cplrpath=simulate5SS(Pts);
+[cplrpath,cplrorient]=simulate5SS(Pts);
 cla
-drawMech(Pts,cplrpath)
+drawMech(Pts,cplrpath,cplrorient)
 length(cplrpath)
 
-function [cplr] = simulate5SS(Pts)
-cplrP=simulate5SS_linearActuation(Pts, .01);
-cplrN=simulate5SS_linearActuation(Pts, -.01);
-cplr=cat(1,flip(cplrN),cplrP);
+function [cplr, cplrO] = simulate5SS(Pts)
+[cplrPath_P,cplrOrient_P]=simulate5SS_linearActuation(Pts, .01);
+[cplrPath_N,cplrOrient_N]=simulate5SS_linearActuation(Pts, -.01);
+cplr=cat(1,flip(cplrPath_N),cplrPath_P(2:end,:));
+cplrO=cat(1,flip(cplrOrient_N),cplrOrient_P(2:end,:));
 end
-function [cplr_Path] = simulate5SS_linearActuation(Pts, iter)
+function [cplr_Path, cplr_Orient] = simulate5SS_linearActuation(Pts, iter)
 DistConsts=[1,6; 2,7; 3,8; 4,9; 5,10; 
     11,6; 11,7; 11,8; 11,9; 11,10; 
     6,7; 6,8; 6,9; 6,10; 
     7,8; 7,9; 7,10; 
     1,7];
+P0=cat(2,Pts(6:end,:),ones(6,1))';
 
 L_init=LenConst(Pts,DistConsts);
 L_target=L_init;
 disp=0;
 cplr_Path=[];
+cplr_Orient=[];
 while(true)
     L_target(end)=L_init(end)+disp;
     Pts=NewtonRhapson(L_target,Pts,DistConsts);
@@ -49,10 +52,18 @@ while(true)
     disp=disp+iter;
     cplr_Path=[cplr_Path;Pts(11,:)];
     
-    cla
-    drawMech(Pts,cplr_Path);
-    drawnow
+    % Calculate displacement matrix
+    Pf=cat(2,Pts(6:end,:),ones(6,1))';
+    Disp=Pf*pinv(P0);
+    Q=calcRot2Quat(Disp(1:3,1:3));
+    cplr_Orient=[cplr_Orient;Q];
+    % Check Result : Pf-Disp*P0=0
+    
+    %cla
+    %drawMech(Pts,cplr_Path,cplr_Orient);
+    %drawnow
 end
+
 end
 
 
@@ -116,7 +127,7 @@ Lengths=Lengths';
 end
 
 % DRAWING function
-function []= drawMech(Pts,cplr_Path)
+function []= drawMech(Pts,cplr_Path,cplr_Orient)
 dyads=[Pts(1:5,:),Pts(6:10,:)];
 cplr=Pts(11,:);
 
@@ -157,9 +168,30 @@ end
 
 %Print Coupler point
 scatter3(cplr(1),cplr(2),cplr(3),20,'ko','LineWidth',1)
-axis ([-10 10 -10 10 -10 10])
+axis ([-11 11 -11 11 -11 11])
 pbaspect([1 1 1])
 
 %Print Coupler Path
 plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3),'r','LineWidth',2);
+
+%Print Coupler Orientation
+[n,~]=size(cplr_Orient);
+for i=1:round(n/25):n
+    Ci=cplr_Path(i,:);
+    Qi=cplr_Orient(i,:);
+    drawCoordSys(Qi,Ci)
+end
+
+end
+function []= drawCoordSys(Q,Origin)
+rot=quat2rotm([Q(4),Q(1),Q(2),Q(3)])';
+O=[Origin;Origin;Origin];
+quiver3(O(:,1),O(:,2),O(:,3),rot(:,1),rot(:,2),rot(:,3),2,'LineWidth',2)
+end
+
+
+% Helper functions
+function [Q]= calcRot2Quat(Rot)
+Qi=rotm2quat(Rot);
+Q=[Qi(2),Qi(3),Qi(4),Qi(1)];
 end
