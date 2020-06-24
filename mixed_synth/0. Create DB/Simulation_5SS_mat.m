@@ -3,8 +3,8 @@ clear all
 close all
 
 rng(0);
-%Time to generate 5900 samples is 15min
-generate5SSData(5900)
+%Time to generate 10k samples is 6min
+generate5SSData(10000)
 
 function []= generate5SSData (n_data)
 Mech=cell(1,n_data);
@@ -37,8 +37,8 @@ save(filename,'CplrOrient')
 
 end
 function [cplr, cplrO] = simulate5SS(Pts)
-[cplrPath_P,cplrOrient_P]=simulate5SS_linearActuation(Pts, .01);
-[cplrPath_N,cplrOrient_N]=simulate5SS_linearActuation(Pts, -.01);
+[cplrPath_P,cplrOrient_P]=simulate5SS_linearActuation(Pts, .05);
+[cplrPath_N,cplrOrient_N]=simulate5SS_linearActuation(Pts, -.05);
 cplr=cat(1,flip(cplrPath_N),cplrPath_P(2:end,:));
 cplrO=cat(1,flip(cplrOrient_N),cplrOrient_P(2:end,:));
 end
