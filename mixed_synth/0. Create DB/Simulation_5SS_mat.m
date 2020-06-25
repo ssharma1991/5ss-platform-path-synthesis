@@ -3,7 +3,7 @@ clear all
 close all
 
 rng(0);
-%Time to generate 10k samples is 6min
+%Time to generate 10k samples is 15min
 generate5SSData(10000)
 
 function []= generate5SSData (n_data)
@@ -37,8 +37,8 @@ save(filename,'CplrOrient')
 
 end
 function [cplr, cplrO] = simulate5SS(Pts)
-[cplrPath_P,cplrOrient_P]=simulate5SS_linearActuation(Pts, .05);
-[cplrPath_N,cplrOrient_N]=simulate5SS_linearActuation(Pts, -.05);
+[cplrPath_P,cplrOrient_P]=simulate5SS_linearActuation(Pts, .02);
+[cplrPath_N,cplrOrient_N]=simulate5SS_linearActuation(Pts, -.02);
 cplr=cat(1,flip(cplrPath_N),cplrPath_P(2:end,:));
 cplrO=cat(1,flip(cplrOrient_N),cplrOrient_P(2:end,:));
 end
@@ -85,6 +85,9 @@ function [Pts]= NewtonRhapson(L_target,Pts,DistConsts)
 F=Cost(LenConst(Pts,DistConsts),L_target);
 for i=1:10
     F_dash=CostGradient(Pts,DistConsts);
+    if (rcond(F_dash)<10^-15)
+        break
+    end
     dX=-F_dash\F;
     dX=reshape(dX,[3,6])';
     Pts(6:11,:)=Pts(6:11,:)+dX;
