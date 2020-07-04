@@ -139,7 +139,7 @@ for i=1:5
     x=[dyads(i,1),dyads(i,4)];
     y=[dyads(i,2),dyads(i,5)];
     z=[dyads(i,3),dyads(i,6)];
-    plot3(x,y,z,'b','LineWidth',2);
+    plot3(x,y,z,'LineWidth',2,'Color',[.5 .5 .5]);
 end
 
 %Print Coupler
@@ -147,7 +147,7 @@ for i=1:5
     x=[dyads(i,4),cplr(1)];
     y=[dyads(i,5),cplr(2)];
     z=[dyads(i,6),cplr(3)];
-    plot3(x,y,z,'g','LineWidth',2)
+    plot3(x,y,z,'LineWidth',2,'Color','#0072BD')
 end
 
 %Print Actuation link
@@ -158,12 +158,12 @@ plot3(x,y,z,':b','LineWidth',2);
 
 %Print Fixed pivots
 for i=1:5
-    scatter3(dyads(i,1),dyads(i,2),dyads(i,3),8,'k^','LineWidth',2)
+    scatter3(dyads(i,1),dyads(i,2),dyads(i,3),8,'k^','LineWidth',4)
 end
 
 %Print Moving pivots
 for i=1:5
-    scatter3(dyads(i,4),dyads(i,5),dyads(i,6),2,'bo','LineWidth',2)
+    scatter3(dyads(i,4),dyads(i,5),dyads(i,6),2,'o','LineWidth',8,'MarkerEdgeColor','#0072BD')
 end
 
 %Print Coupler point
@@ -172,7 +172,7 @@ axis ([-11 11 -11 11 -11 11])
 pbaspect([1 1 1])
 
 %Print Coupler Path
-plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3),'r','LineWidth',2);
+plot3(cplr_Path(:,1),cplr_Path(:,2),cplr_Path(:,3),'LineWidth',2,'Color',[.7 .7 .7]);
 
 %Print Coupler Orientation
 [n,~]=size(cplr_Orient);
@@ -185,8 +185,13 @@ end
 end
 function []= drawCoordSys(Q,Origin)
 rot=quat2rotm([Q(4),Q(1),Q(2),Q(3)])';
-O=[Origin;Origin;Origin];
-quiver3(O(:,1),O(:,2),O(:,3),rot(:,1),rot(:,2),rot(:,3),2,'LineWidth',2)
+O=Origin;
+%x axis
+quiver3(O(1),O(2),O(3),rot(1,1),rot(2,1),rot(3,1),1,'LineWidth',1,'Color','r','MaxHeadSize',1)
+%y axis
+quiver3(O(1),O(2),O(3),rot(1,2),rot(2,2),rot(3,2),1,'LineWidth',1,'Color',[ 0.4660,0.6740,0.1880],'MaxHeadSize',1)
+%z axis
+quiver3(O(1),O(2),O(3),rot(1,3),rot(2,3),rot(3,3),1,'LineWidth',1,'Color','b','MaxHeadSize',1)
 end
 
 
